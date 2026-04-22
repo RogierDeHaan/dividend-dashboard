@@ -387,22 +387,40 @@ async function save() {
   if (ghSaving) { ghSaveQueued = true; return; }
   ghSaving = true;
   setSyncStatus('saving', 'Opslaan…');
-  try {
+
+  const doSave = async (sha) => {
     const data = { holdings:state.holdings, transactions:state.transactions, prices:state.prices, monthlyGoal:state.monthlyGoal };
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    const body = { message:'Portfolio update', content, ...(ghSha ? {sha:ghSha} : {}) };
-    const r = await fetch(GH_API, {
+    const body = { message:'Portfolio update', content, ...(sha ? {sha} : {}) };
+    return fetch(GH_API, {
       method: 'PUT',
       headers: { 'Authorization':`Bearer ${ghToken}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
       body: JSON.stringify(body)
     });
+  };
+
+  try {
+    let r = await doSave(ghSha);
+
+    // 409 of 422 = SHA conflict → haal huidige SHA op en probeer opnieuw
+    if (r.status === 409 || r.status === 422) {
+      const check = await fetch(GH_API, {
+        headers: { 'Authorization':`Bearer ${ghToken}`, 'Accept':'application/vnd.github.v3+json' }
+      });
+      if (check.ok) {
+        const j = await check.json();
+        ghSha = j.sha;
+        r = await doSave(ghSha);
+      }
+    }
+
     if (!r.ok) throw new Error(r.status);
     const json = await r.json();
     ghSha = json.content.sha;
     setSyncStatus('ok', 'Opgeslagen · ' + new Date().toLocaleTimeString('nl-NL'));
   } catch(e) {
     console.error('GitHub save fout:', e);
-    setSyncStatus('err', 'Opslaan mislukt — lokaal bewaard');
+    setSyncStatus('err', 'Opslaan mislukt — lokaal bewaard (' + e.message + ')');
   }
   ghSaving = false;
   if (ghSaveQueued) { ghSaveQueued = false; save(); }
