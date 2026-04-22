@@ -324,7 +324,7 @@ const GH_REPO  = 'dividend-dashboard';
 const GH_FILE  = 'portfolio-data.json';
 const GH_API   = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
 
-let ghToken  = localStorage.getItem('gh_token') || '';
+let ghToken  = (localStorage.getItem('gh_token') || '').replace(/[^\x20-\x7E]/g, '').trim();
 let ghSha    = null;   // nodig bij updates (GitHub vereist SHA van huidige versie)
 let ghSaving = false;
 let ghSaveQueued = false;
@@ -434,7 +434,9 @@ function showTokenSetup() {
 }
 
 function saveToken() {
-  const t = document.getElementById('token-input')?.value?.trim();
+  const raw = document.getElementById('token-input')?.value || '';
+  // Verwijder alle niet-ASCII tekens (onzichtbare tekens, zero-width spaces etc.)
+  const t = raw.replace(/[^\x20-\x7E]/g, '').trim();
   if (!t) return alert('Voer je token in.');
   ghToken = t;
   localStorage.setItem('gh_token', t);
