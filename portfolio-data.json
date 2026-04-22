@@ -3,7 +3,7 @@
     {
       "id": "dis1",
       "ticker": "DIS1",
-      "yahooTicker": "DIS1.MI",
+      "yahooTicker": "DIS.MI",
       "name": "D'Amico Intl Shipping",
       "type": "stock",
       "currency": "EUR",
