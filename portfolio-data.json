@@ -1,0 +1,428 @@
+{
+  "holdings": [
+    {
+      "id": "dis1",
+      "ticker": "DIS1",
+      "yahooTicker": "DIS1.MI",
+      "name": "D'Amico Intl Shipping",
+      "type": "stock",
+      "currency": "EUR",
+      "dividendPerShare": 0.23,
+      "frequency": "annual",
+      "startMonth": 4,
+      "sector": "Scheepvaart"
+    },
+    {
+      "id": "nn",
+      "ticker": "NN",
+      "yahooTicker": "NN.AS",
+      "name": "NN Group NV",
+      "type": "stock",
+      "currency": "EUR",
+      "dividendPerShare": 2.5,
+      "frequency": "semiannual",
+      "startMonth": 4,
+      "sector": "Verzekeringen"
+    },
+    {
+      "id": "asrnl",
+      "ticker": "ASRNL",
+      "yahooTicker": "ASRNL.AS",
+      "name": "ASR Nederland NV",
+      "type": "stock",
+      "currency": "EUR",
+      "dividendPerShare": 2.14,
+      "frequency": "semiannual",
+      "startMonth": 4,
+      "sector": "Verzekeringen"
+    },
+    {
+      "id": "hema",
+      "ticker": "HEMA",
+      "yahooTicker": "HEMA.L",
+      "name": "HSBC MSCI EM ETF USD Acc",
+      "type": "etf",
+      "currency": "EUR",
+      "dividendPerShare": 0,
+      "frequency": "annual",
+      "startMonth": 0,
+      "sector": "Emerging Markets"
+    },
+    {
+      "id": "c051",
+      "ticker": "C051",
+      "yahooTicker": "C051.PA",
+      "name": "Amundi Euro STXX30 Dividend",
+      "type": "etf",
+      "currency": "EUR",
+      "dividendPerShare": 2.07,
+      "frequency": "annual",
+      "startMonth": 11,
+      "sector": "Europa Dividend"
+    },
+    {
+      "id": "flxd",
+      "ticker": "FLXD",
+      "yahooTicker": "FLXD.L",
+      "name": "Franklin EUR Quality Div ETF",
+      "type": "etf",
+      "currency": "EUR",
+      "dividendPerShare": 0.7,
+      "frequency": "quarterly",
+      "startMonth": 2,
+      "sector": "Europa Dividend"
+    },
+    {
+      "id": "cat",
+      "ticker": "CAT",
+      "yahooTicker": "CAT",
+      "name": "Caterpillar Inc",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 1.51,
+      "frequency": "quarterly",
+      "startMonth": 0,
+      "sector": "Industrie"
+    },
+    {
+      "id": "lpth",
+      "ticker": "LPTH",
+      "yahooTicker": "LPTH",
+      "name": "LightPath Technologies",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 0,
+      "frequency": "annual",
+      "startMonth": 0,
+      "sector": "Technologie"
+    },
+    {
+      "id": "adc",
+      "ticker": "ADC",
+      "yahooTicker": "ADC",
+      "name": "Agree Realty Corp",
+      "type": "reit",
+      "currency": "USD",
+      "dividendPerShare": 0.27,
+      "frequency": "monthly",
+      "startMonth": 0,
+      "sector": "REIT Retail"
+    },
+    {
+      "id": "main",
+      "ticker": "MAIN",
+      "yahooTicker": "MAIN",
+      "name": "Main Street Capital Corp",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 0.26,
+      "frequency": "monthly",
+      "startMonth": 0,
+      "sector": "BDC"
+    },
+    {
+      "id": "o",
+      "ticker": "O",
+      "yahooTicker": "O",
+      "name": "Realty Income Corp",
+      "type": "reit",
+      "currency": "USD",
+      "dividendPerShare": 0.27,
+      "frequency": "monthly",
+      "startMonth": 0,
+      "sector": "REIT Retail"
+    },
+    {
+      "id": "cswc",
+      "ticker": "CSWC",
+      "yahooTicker": "CSWC",
+      "name": "Capital Southwest Corp",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 0.19,
+      "frequency": "monthly",
+      "startMonth": 0,
+      "sector": "BDC"
+    },
+    {
+      "id": "otf",
+      "ticker": "OTF",
+      "yahooTicker": "OTF",
+      "name": "Blue Owl Technology Finance",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 0.35,
+      "frequency": "quarterly",
+      "startMonth": 2,
+      "sector": "BDC"
+    },
+    {
+      "id": "tslx",
+      "ticker": "TSLX",
+      "yahooTicker": "TSLX",
+      "name": "Sixth Street Specialty Lend",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 0.46,
+      "frequency": "quarterly",
+      "startMonth": 1,
+      "sector": "BDC"
+    },
+    {
+      "id": "arcc",
+      "ticker": "ARCC",
+      "yahooTicker": "ARCC",
+      "name": "Ares Capital Corp",
+      "type": "reit",
+      "currency": "USD",
+      "dividendPerShare": 0.48,
+      "frequency": "quarterly",
+      "startMonth": 2,
+      "sector": "BDC"
+    },
+    {
+      "id": "vici",
+      "ticker": "VICI",
+      "yahooTicker": "VICI",
+      "name": "VICI Properties Inc",
+      "type": "reit",
+      "currency": "USD",
+      "dividendPerShare": 0.45,
+      "frequency": "quarterly",
+      "startMonth": 2,
+      "sector": "REIT Gaming"
+    },
+    {
+      "id": "bxsl",
+      "ticker": "BXSL",
+      "yahooTicker": "BXSL",
+      "name": "Blackstone Secured Lending",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 0.77,
+      "frequency": "quarterly",
+      "startMonth": 2,
+      "sector": "BDC"
+    },
+    {
+      "id": "pep",
+      "ticker": "PEP",
+      "yahooTicker": "PEP",
+      "name": "PepsiCo Inc",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 1.42,
+      "frequency": "quarterly",
+      "startMonth": 2,
+      "sector": "Consumentengoed"
+    },
+    {
+      "id": "obdc",
+      "ticker": "OBDC",
+      "yahooTicker": "OBDC",
+      "name": "Blue Owl Capital Corp",
+      "type": "stock",
+      "currency": "USD",
+      "dividendPerShare": 0.37,
+      "frequency": "quarterly",
+      "startMonth": 1,
+      "sector": "BDC"
+    },
+    {
+      "id": "ahrt",
+      "ticker": "AHRT",
+      "yahooTicker": "AHRT",
+      "name": "AH Realty Trust Inc",
+      "type": "reit",
+      "currency": "USD",
+      "dividendPerShare": 0.14,
+      "frequency": "quarterly",
+      "startMonth": 2,
+      "sector": "REIT"
+    }
+  ],
+  "transactions": [
+    {
+      "hid": "dis1",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 54,
+      "price": 4.38,
+      "fees": 0,
+      "id": "1"
+    },
+    {
+      "hid": "nn",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 8,
+      "price": 58.96,
+      "fees": 0,
+      "id": "2"
+    },
+    {
+      "hid": "asrnl",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 5,
+      "price": 57.8,
+      "fees": 0,
+      "id": "3"
+    },
+    {
+      "hid": "hema",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 23,
+      "price": 14.49,
+      "fees": 0,
+      "id": "4"
+    },
+    {
+      "hid": "c051",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 31,
+      "price": 47.11,
+      "fees": 0,
+      "id": "5"
+    },
+    {
+      "hid": "flxd",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 41,
+      "price": 37.2,
+      "fees": 0,
+      "id": "6"
+    },
+    {
+      "hid": "cat",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 1,
+      "price": 326.63,
+      "fees": 0,
+      "id": "7"
+    },
+    {
+      "hid": "lpth",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 5,
+      "price": 8.3,
+      "fees": 0,
+      "id": "8"
+    },
+    {
+      "hid": "adc",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 10,
+      "price": 59.57,
+      "fees": 0,
+      "id": "9"
+    },
+    {
+      "hid": "main",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 20,
+      "price": 43.41,
+      "fees": 0,
+      "id": "10"
+    },
+    {
+      "hid": "o",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 15,
+      "price": 59.48,
+      "fees": 0,
+      "id": "11"
+    },
+    {
+      "hid": "cswc",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 45,
+      "price": 22.83,
+      "fees": 0,
+      "id": "12"
+    },
+    {
+      "hid": "otf",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 50,
+      "price": 11.4,
+      "fees": 0,
+      "id": "13"
+    },
+    {
+      "hid": "tslx",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 24,
+      "price": 19.12,
+      "fees": 0,
+      "id": "14"
+    },
+    {
+      "hid": "arcc",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 78,
+      "price": 19.85,
+      "fees": 0,
+      "id": "15"
+    },
+    {
+      "hid": "vici",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 21,
+      "price": 29.89,
+      "fees": 0,
+      "id": "16"
+    },
+    {
+      "hid": "bxsl",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 1,
+      "price": 27.94,
+      "fees": 0,
+      "id": "17"
+    },
+    {
+      "hid": "pep",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 5,
+      "price": 178.67,
+      "fees": 0,
+      "id": "18"
+    },
+    {
+      "hid": "obdc",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 49,
+      "price": 14.88,
+      "fees": 0,
+      "id": "19"
+    },
+    {
+      "hid": "ahrt",
+      "date": "2026-04-22",
+      "type": "buy",
+      "shares": 30,
+      "price": 10.45,
+      "fees": 0,
+      "id": "20"
+    }
+  ],
+  "prices": {},
+  "monthlyGoal": 0
+}
