@@ -113,7 +113,7 @@
       "ticker": "MAIN",
       "yahooTicker": "MAIN",
       "name": "Main Street Capital Corp",
-      "type": "stock",
+      "type": "bdc",
       "currency": "USD",
       "dividendPerShare": 0.26,
       "frequency": "monthly",
@@ -454,7 +454,8 @@
     },
     "MAIN": {
       "price": 54.65,
-      "time": "2026-04-23T09:04:41.235Z"
+      "time": "2026-04-23T09:19:49.820Z",
+      "manual": true
     },
     "O": {
       "price": 63.34,
