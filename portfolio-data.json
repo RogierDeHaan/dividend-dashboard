@@ -161,7 +161,7 @@
       "ticker": "TSLX",
       "yahooTicker": "TSLX",
       "name": "Sixth Street Specialty Lend",
-      "type": "stock",
+      "type": "bdc",
       "currency": "USD",
       "dividendPerShare": 0.46,
       "frequency": "quarterly",
@@ -473,7 +473,8 @@
     },
     "TSLX": {
       "price": 18.93,
-      "time": "2026-04-23T09:04:43.238Z"
+      "time": "2026-04-23T09:20:08.580Z",
+      "manual": true
     },
     "ARCC": {
       "price": 19.1,
