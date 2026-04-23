@@ -173,7 +173,7 @@
       "ticker": "ARCC",
       "yahooTicker": "ARCC",
       "name": "Ares Capital Corp",
-      "type": "reit",
+      "type": "bdc",
       "currency": "USD",
       "dividendPerShare": 0.48,
       "frequency": "quarterly",
@@ -474,7 +474,7 @@
     },
     "ARCC": {
       "price": 19.1,
-      "time": "2026-04-23T09:19:19.080Z",
+      "time": "2026-04-23T09:19:29.693Z",
       "manual": true
     },
     "VICI": {
