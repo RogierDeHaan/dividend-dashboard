@@ -317,6 +317,9 @@ let state = {
   selectedHolding: null,
   monthlyGoal: 0,
   chartInstances: {},
+  totalCardCurrency: "EUR",   // toggle EUR/USD voor totaalkaart
+  fxRate: null,               // EUR/USD wisselkoers
+  fxTime: null,
 };
 
 // ─── GITHUB STORAGE ──────────────────────────────────────────────────────────
@@ -580,6 +583,37 @@ function setPriceStatus(s, msg) {
   txt.textContent = msg;
 }
 
+// ─── WISSELKOERS ─────────────────────────────────────────────────────────────
+async function fetchFxRate() {
+  // Gratis API, geen key nodig
+  try {
+    const r = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR');
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    state.fxRate = d.rates.EUR;
+    state.fxTime = new Date().toISOString();
+    return state.fxRate;
+  } catch {
+    // Fallback: probeer alternatief
+    try {
+      const r2 = await fetch('https://open.er-api.com/v6/latest/USD');
+      if (!r2.ok) throw new Error();
+      const d2 = await r2.json();
+      state.fxRate = d2.rates.EUR;
+      state.fxTime = new Date().toISOString();
+      return state.fxRate;
+    } catch {
+      return state.fxRate || 0.92; // laatste bekende of schatting
+    }
+  }
+}
+
+function toggleTotalCurrency() {
+  state.totalCardCurrency = state.totalCardCurrency === 'EUR' ? 'USD' : 'EUR';
+  if (!state.fxRate) fetchFxRate().then(()=>renderOverview(allComputed()));
+  else renderOverview(allComputed());
+}
+
 // ─── TABS ────────────────────────────────────────────────────────────────────
 let activeTab = 'overview';
 function setTab(tab) {
@@ -614,6 +648,48 @@ function renderOverview(computed) {
     };
   }
   const ea=agg(eur), ua=agg(usd);
+
+  // Wisselkoers ophalen als nog niet beschikbaar
+  if (!state.fxRate) fetchFxRate().then(rate => { if(rate) renderOverview(allComputed()); });
+  const fx = state.fxRate || 0.92; // EUR per 1 USD
+  const fxInv = 1 / fx;           // USD per 1 EUR
+
+  // Totaal in gekozen valuta
+  const tc = state.totalCardCurrency;
+  const toTC = (eurAmt, usdAmt) => tc === 'EUR'
+    ? eurAmt + usdAmt * fx
+    : eurAmt * fxInv + usdAmt;
+
+  const totVal  = toTC(ea.val,  ua.val);
+  const totCost = toTC(ea.cost, ua.cost);
+  const totDiv  = toTC(ea.div,  ua.div);
+  const totPnl  = totVal - totCost;
+  const totYld  = totVal ? (totDiv/totVal)*100 : 0;
+  const totPnlPct = totCost ? (totPnl/totCost)*100 : 0;
+  const fxLabel = tc==='EUR'
+    ? `1 USD = ${fx.toFixed(4)} EUR`
+    : `1 EUR = ${fxInv.toFixed(4)} USD`;
+  const fxAge = state.fxTime
+    ? new Date(state.fxTime).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'})
+    : 'schatting';
+
+  const totalCard = `<div class="kpi-card" style="border:1px solid #d4a84344;grid-column:span 2;background:linear-gradient(135deg,#0f1a2e,#0d1929)">
+    <div class="kpi-cur" style="justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:10px;color:#3a4a6a;letter-spacing:1px">${ea.cnt+ua.cnt} POSITIES TOTAAL</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:10px;color:#4a5a7a">${fxLabel} · ${fxAge}</span>
+        <button onclick="toggleTotalCurrency()" style="background:#1a2540;border:1px solid #d4a84366;color:#d4a843;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit">${tc} ⇄</button>
+      </div>
+    </div>
+    <div class="kpi-metrics" style="grid-template-columns:repeat(4,1fr)">
+      <div><div class="kpi-label">Totale Waarde</div><div class="kpi-value gold">${fc(totVal,tc)}</div></div>
+      <div><div class="kpi-label">Jaarl. Dividend</div><div class="kpi-value green">${fc(totDiv,tc)}</div></div>
+      <div><div class="kpi-label">Portfolio Yield</div><div class="kpi-value" style="color:#a78bfa">${fn(totYld)}%</div></div>
+      <div><div class="kpi-label">Koersresultaat</div><div class="kpi-value ${totPnl>=0?'green':'red'}">${fc(totPnl,tc)} <span style="font-size:12px">(${fp(totPnlPct)})</span></div></div>
+    </div>
+  </div>`;
 
   function kpiCard(cur, a) {
     const pnl = a.val-a.cost, pnlPct = a.cost?(pnl/a.cost)*100:0, yld=a.val?(a.div/a.val)*100:0;
@@ -705,7 +781,7 @@ function renderOverview(computed) {
   }
 
   document.getElementById('tab-overview').innerHTML = `
-    <div class="kpi-grid">${kpiCard('EUR',ea)}${kpiCard('USD',ua)}</div>
+    <div class="kpi-grid" style="grid-template-columns:1fr 1fr">${totalCard}${kpiCard('EUR',ea)}${kpiCard('USD',ua)}</div>
     <div class="charts-row">
       <div class="card"><div class="card-title">Top sectoren · Jaarlijks dividend</div>${secHTML}</div>
       <div class="card">
@@ -1476,6 +1552,7 @@ function saveEditTx(id) {
 // ─── INIT ────────────────────────────────────────────────────────────────────
 (async () => {
   await load();
+  fetchFxRate(); // haal wisselkoers op op de achtergrond
   render();
 
   // Auto-load prices als ze ouder zijn dan 30 min
