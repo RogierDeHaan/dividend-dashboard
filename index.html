@@ -55,7 +55,7 @@ main{padding:22px 28px;max-width:1400px;margin:0 auto}
 
 /* CHARTS ROW */
 .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.bar-wrap{display:flex;align-items:flex-end;gap:3px;height:100px}
+.bar-wrap{display:flex;align-items:flex-end;gap:3px;height:140px}
 .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
 .bar-label{font-size:8px;font-weight:700}
 
@@ -74,7 +74,8 @@ td{padding:10px 12px;white-space:nowrap}
 .badge-stock{background:#34d39922;color:#34d399;border:1px solid #34d39944}
 .badge-etf{background:#60a5fa22;color:#60a5fa;border:1px solid #60a5fa44}
 .badge-reit{background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b44}
-.badge-other{background:#a78bfa22;color:#a78bfa;border:1px solid #a78bfa44}
+.badge-bdc{background:#a78bfa22;color:#a78bfa;border:1px solid #a78bfa44}
+.badge-other{background:#6b7280;color:#e5e7eb;border:1px solid #9ca3af44}
 .badge-eur{background:#60a5fa22;color:#60a5fa;border:1px solid #60a5fa44}
 .badge-usd{background:#34d39922;color:#34d399;border:1px solid #34d39944}
 .badge-buy{background:#14532d;color:#4ade80;border:none;font-size:10px}
@@ -663,7 +664,14 @@ function renderOverview(computed) {
   const maxCal = Math.max(...calData.map(d=>d.eur+d.usd),1);
   const barHTML = calData.map((d,i)=>{
     const isCur=i===NOW_MONTH;
+    const total = d.eur+d.usd;
+    // Labels boven de balk: EUR blauw, USD groen, alleen tonen als >0
+    const eurLabel = d.eur>0 ? '<div style="font-size:8px;color:#60a5fa;text-align:center;line-height:1.2;white-space:nowrap">'+fc(d.eur,'EUR').replace('€','€')+'</div>' : '';
+    const usdLabel = d.usd>0 ? '<div style="font-size:8px;color:#34d399;text-align:center;line-height:1.2;white-space:nowrap">'+fc(d.usd,'USD').replace('US$','$')+'</div>' : '';
     return `<div class="bar-col">
+      <div style="min-height:36px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;margin-bottom:3px">
+        ${isCur?(eurLabel+usdLabel):(eurLabel+usdLabel)}
+      </div>
       <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:80px;gap:1px">
         ${d.usd>0?`<div style="background:${isCur?'#d4a843':'#34d39966'};border-radius:2px 2px 0 0;height:${(d.usd/maxCal)*76}px;min-height:3px"></div>`:''}
         ${d.eur>0?`<div style="background:${isCur?'#b8860b':'#60a5fa66'};height:${(d.eur/maxCal)*76}px;min-height:3px;border-radius:${d.usd?'0':'2px 2px 0 0'}"></div>`:''}
@@ -849,7 +857,8 @@ function renderHoldings(computed) {
     return `<th class="${active?'sorted':''}" onclick="setSort('${col}')">${label}${arrow}</th>`;
   }
 
-  const TYPE_LBL = {stock:'Aandeel',etf:'ETF',reit:'REIT',other:'Overig'};
+  const TYPE_LBL = {stock:'Aandeel',etf:'ETF',reit:'REIT',bdc:'BDC',other:'Overig'};
+  const TYPE_CSS = {stock:'stock',etf:'etf',reit:'reit',bdc:'bdc',other:'other'};
   const COLS_COUNT = 11;
 
   const rows = filtered.map(h=>{
@@ -863,7 +872,7 @@ function renderHoldings(computed) {
     const mainRow = `<tr id="row-${h.id}" class="${isSelected?'selected-row':''}" onclick="toggleHolding('${h.id}')" style="cursor:pointer">
       <td class="mono gold fw7">${h.ticker}</td>
       <td style="color:#a0b0c8;max-width:150px;overflow:hidden;text-overflow:ellipsis">${h.name||'—'}</td>
-      <td><span class="badge badge-${h.type}">${typeLabel}</span></td>
+      <td><span class="badge badge-${TYPE_CSS[h.type]||'other'}">${TYPE_LBL[h.type]||h.type.toUpperCase()}</span></td>
       <td><span class="badge badge-${h.currency.toLowerCase()}">${h.currency}</span></td>
       <td class="grey">${fn(h.shares,h.shares%1===0?0:3)}</td>
       <td class="grey">${fc(h.avgCost,h.currency)}</td>
@@ -1205,6 +1214,24 @@ function setGoal() {
   renderOverview(allComputed());
 }
 
+function toggleCustomType(mode) {
+  const sel = document.getElementById('f-type');
+  const inp = document.getElementById('f-type-custom');
+  if (!sel || !inp) return;
+  inp.style.display = sel.value === 'custom' ? 'block' : 'none';
+  if (sel.value === 'custom') inp.focus();
+}
+
+function getTypeValue() {
+  const sel = document.getElementById('f-type');
+  if (!sel) return 'other';
+  if (sel.value === 'custom') {
+    const custom = document.getElementById('f-type-custom')?.value?.trim().toLowerCase();
+    return custom || 'other';
+  }
+  return sel.value;
+}
+
 // ─── SORT / FILTER ────────────────────────────────────────────────────────────
 function setSort(col) {
   if(state.sortCol===col) state.sortDir=state.sortDir==='asc'?'desc':'asc';
@@ -1249,7 +1276,17 @@ function openModal(mode, hid) {
         <div class="form-group"><label>Ticker *</label><input id="f-ticker" placeholder="VWRL"></div>
         <div class="form-group"><label>Yahoo Finance Ticker</label><input id="f-yticker" placeholder="VWRL.AS"></div>
         <div class="form-group full"><label>Naam</label><input id="f-name" placeholder="Vanguard FTSE All-World…"></div>
-        <div class="form-group"><label>Type</label><select id="f-type"><option value="stock">Aandeel</option><option value="etf">ETF</option><option value="reit">REIT</option><option value="other">Overig</option></select></div>
+        <div class="form-group"><label>Type</label>
+          <select id="f-type" onchange="toggleCustomType('add')">
+            <option value="stock">Aandeel</option>
+            <option value="etf">ETF</option>
+            <option value="reit">REIT</option>
+            <option value="bdc">BDC</option>
+            <option value="other">Overig</option>
+            <option value="custom">Eigen type…</option>
+          </select>
+          <input id="f-type-custom" placeholder="Eigen type invoeren" style="display:none;margin-top:6px;background:#0a0f1e;border:1px solid #1e2e50;border-radius:7px;padding:9px 12px;color:#e8eaf0;font-size:13px;width:100%">
+        </div>
         <div class="form-group"><label>Valuta</label><select id="f-cur"><option value="EUR">EUR</option><option value="USD">USD</option></select></div>
         <div class="form-group"><label>Div. per aandeel</label><input id="f-div" type="number" placeholder="0.27" min="0" step="0.01"></div>
         <div class="form-group"><label>Frequentie</label><select id="f-freq"><option value="monthly">Maandelijks</option><option value="quarterly" selected>Kwartaal</option><option value="semiannual">Halfjaarlijks</option><option value="annual">Jaarlijks</option></select></div>
@@ -1272,7 +1309,19 @@ function openModal(mode, hid) {
       <div class="form-grid">
         <div class="form-group"><label>Yahoo Finance Ticker</label><input id="f-yticker" value="${h.yahooTicker||h.ticker}"></div>
         <div class="form-group"><label>Naam</label><input id="f-name" value="${h.name||''}"></div>
-        <div class="form-group"><label>Type</label><select id="f-type">${['stock','etf','reit','other'].map(t=>`<option value="${t}" ${h.type===t?'selected':''}>${{stock:'Aandeel',etf:'ETF',reit:'REIT',other:'Overig'}[t]}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Type</label>
+          <select id="f-type" onchange="toggleCustomType('edit')">
+            ${['stock','etf','reit','bdc','other','custom'].map(t=>{
+              const labels = {stock:'Aandeel',etf:'ETF',reit:'REIT',bdc:'BDC',other:'Overig',custom:'Eigen type…'};
+              const knownTypes = ['stock','etf','reit','bdc','other'];
+              const isKnown = knownTypes.includes(h.type);
+              const sel = (isKnown ? h.type===t : t==='custom') ? 'selected' : '';
+              return '<option value="'+t+'" '+sel+'>'+labels[t]+'</option>';
+            }).join('')}
+          </select>
+          <input id="f-type-custom" placeholder="Eigen type" value="${!['stock','etf','reit','bdc','other'].includes(h.type)?h.type:''}"
+            style="display:${!['stock','etf','reit','bdc','other'].includes(h.type)?'block':'none'};margin-top:6px;background:#0a0f1e;border:1px solid #1e2e50;border-radius:7px;padding:9px 12px;color:#e8eaf0;font-size:13px;width:100%">
+        </div>
         <div class="form-group"><label>Div. per aandeel</label><input id="f-div" type="number" value="${h.dividendPerShare}" min="0" step="0.01"></div>
         <div class="form-group"><label>Frequentie</label><select id="f-freq">${Object.entries(FREQ).map(([k,v])=>`<option value="${k}" ${h.frequency===k?'selected':''}>${v.label}</option>`).join('')}</select></div>
         <div class="form-group"><label>Eerste div. maand</label><select id="f-sm">${MO.map((m,i)=>`<option value="${i}" ${h.startMonth===i?'selected':''}>${m}</option>`).join('')}</select></div>
@@ -1334,7 +1383,7 @@ function saveHolding() {
     ticker,
     yahooTicker: document.getElementById('f-yticker')?.value?.trim()||ticker,
     name: document.getElementById('f-name')?.value?.trim()||'',
-    type: document.getElementById('f-type')?.value||'stock',
+    type: getTypeValue(),
     currency: document.getElementById('f-cur')?.value||'EUR',
     dividendPerShare: parseFloat(document.getElementById('f-div')?.value)||0,
     frequency: document.getElementById('f-freq')?.value||'quarterly',
@@ -1350,7 +1399,7 @@ function saveEdit(hid) {
   if(!h) return;
   h.yahooTicker = document.getElementById('f-yticker')?.value?.trim()||h.yahooTicker;
   h.name = document.getElementById('f-name')?.value?.trim()||h.name;
-  h.type = document.getElementById('f-type')?.value||h.type;
+  h.type = getTypeValue();
   h.dividendPerShare = parseFloat(document.getElementById('f-div')?.value)||0;
   h.frequency = document.getElementById('f-freq')?.value||h.frequency;
   h.startMonth = parseInt(document.getElementById('f-sm')?.value)||h.startMonth;
