@@ -221,7 +221,7 @@
       "ticker": "OBDC",
       "yahooTicker": "OBDC",
       "name": "Blue Owl Capital Corp",
-      "type": "stock",
+      "type": "bdc",
       "currency": "USD",
       "dividendPerShare": 0.37,
       "frequency": "quarterly",
@@ -493,7 +493,8 @@
     },
     "OBDC": {
       "price": 11.61,
-      "time": "2026-04-23T09:04:45.724Z"
+      "time": "2026-04-23T09:19:57.553Z",
+      "manual": true
     },
     "AHRT": {
       "price": 6.02,
