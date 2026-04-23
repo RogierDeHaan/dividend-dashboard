@@ -149,7 +149,7 @@
       "ticker": "OTF",
       "yahooTicker": "OTF",
       "name": "Blue Owl Technology Finance",
-      "type": "stock",
+      "type": "bdc",
       "currency": "USD",
       "dividendPerShare": 0.35,
       "frequency": "quarterly",
@@ -468,7 +468,8 @@
     },
     "OTF": {
       "price": 11.54,
-      "time": "2026-04-23T09:04:42.750Z"
+      "time": "2026-04-23T09:20:03.407Z",
+      "manual": true
     },
     "TSLX": {
       "price": 18.93,
