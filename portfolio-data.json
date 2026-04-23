@@ -197,7 +197,7 @@
       "ticker": "BXSL",
       "yahooTicker": "BXSL",
       "name": "Blackstone Secured Lending",
-      "type": "stock",
+      "type": "bdc",
       "currency": "USD",
       "dividendPerShare": 0.77,
       "frequency": "quarterly",
@@ -487,7 +487,8 @@
     },
     "BXSL": {
       "price": 24.15,
-      "time": "2026-04-23T09:04:44.699Z"
+      "time": "2026-04-23T09:20:25.700Z",
+      "manual": true
     },
     "PEP": {
       "price": 153.79,
