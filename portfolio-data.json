@@ -137,7 +137,7 @@
       "ticker": "CSWC",
       "yahooTicker": "CSWC",
       "name": "Capital Southwest Corp",
-      "type": "stock",
+      "type": "bdc",
       "currency": "USD",
       "dividendPerShare": 0.19,
       "frequency": "monthly",
@@ -462,7 +462,8 @@
     },
     "CSWC": {
       "price": 23.63,
-      "time": "2026-04-23T09:04:42.268Z"
+      "time": "2026-04-23T09:19:40.828Z",
+      "manual": true
     },
     "OTF": {
       "price": 11.54,
