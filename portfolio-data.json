@@ -113,7 +113,7 @@
       "ticker": "MAIN",
       "yahooTicker": "MAIN",
       "name": "Main Street Capital Corp",
-      "type": "bdc",
+      "type": "stock",
       "currency": "USD",
       "dividendPerShare": 0.26,
       "frequency": "monthly",
@@ -137,7 +137,7 @@
       "ticker": "CSWC",
       "yahooTicker": "CSWC",
       "name": "Capital Southwest Corp",
-      "type": "bdc",
+      "type": "stock",
       "currency": "USD",
       "dividendPerShare": 0.19,
       "frequency": "monthly",
@@ -149,7 +149,7 @@
       "ticker": "OTF",
       "yahooTicker": "OTF",
       "name": "Blue Owl Technology Finance",
-      "type": "bdc",
+      "type": "stock",
       "currency": "USD",
       "dividendPerShare": 0.35,
       "frequency": "quarterly",
@@ -161,7 +161,7 @@
       "ticker": "TSLX",
       "yahooTicker": "TSLX",
       "name": "Sixth Street Specialty Lend",
-      "type": "bdc",
+      "type": "stock",
       "currency": "USD",
       "dividendPerShare": 0.46,
       "frequency": "quarterly",
@@ -173,7 +173,7 @@
       "ticker": "ARCC",
       "yahooTicker": "ARCC",
       "name": "Ares Capital Corp",
-      "type": "bdc",
+      "type": "reit",
       "currency": "USD",
       "dividendPerShare": 0.48,
       "frequency": "quarterly",
@@ -197,7 +197,7 @@
       "ticker": "BXSL",
       "yahooTicker": "BXSL",
       "name": "Blackstone Secured Lending",
-      "type": "bdc",
+      "type": "stock",
       "currency": "USD",
       "dividendPerShare": 0.77,
       "frequency": "quarterly",
@@ -221,7 +221,7 @@
       "ticker": "OBDC",
       "yahooTicker": "OBDC",
       "name": "Blue Owl Capital Corp",
-      "type": "bdc",
+      "type": "stock",
       "currency": "USD",
       "dividendPerShare": 0.37,
       "frequency": "quarterly",
@@ -425,85 +425,85 @@
   ],
   "prices": {
     "NN.AS": {
-      "price": 73.34,
-      "time": "2026-04-23T19:24:12.125Z"
+      "price": 73.28,
+      "time": "2026-04-24T11:49:48.842Z"
     },
     "ASRNL.AS": {
-      "price": 63.48,
-      "time": "2026-04-23T19:24:12.609Z"
+      "price": 63.68,
+      "time": "2026-04-24T11:49:49.363Z"
     },
     "HEMA.L": {
-      "price": 17.487,
-      "time": "2026-04-23T19:24:13.111Z"
+      "price": 17.442,
+      "time": "2026-04-24T11:49:49.909Z"
     },
     "FLXD.L": {
-      "price": 32.045,
-      "time": "2026-04-23T19:24:14.065Z"
+      "price": 32.063,
+      "time": "2026-04-24T11:49:50.992Z"
     },
     "CAT": {
-      "price": 835.32,
-      "time": "2026-04-23T19:24:14.776Z"
+      "price": 835.24,
+      "time": "2026-04-24T11:49:51.636Z"
     },
     "LPTH": {
-      "price": 14.42,
-      "time": "2026-04-23T19:24:15.244Z"
+      "price": 14.62,
+      "time": "2026-04-24T11:49:52.206Z"
     },
     "ADC": {
-      "price": 77.105,
-      "time": "2026-04-23T19:24:15.758Z"
+      "price": 77.25,
+      "time": "2026-04-24T11:49:52.809Z"
     },
     "MAIN": {
-      "price": 53.889,
-      "time": "2026-04-23T19:24:16.253Z"
+      "price": 54.02,
+      "time": "2026-04-24T11:49:53.363Z"
     },
     "O": {
-      "price": 64.005,
-      "time": "2026-04-23T19:24:16.779Z"
+      "price": 64.08,
+      "time": "2026-04-24T11:49:53.918Z"
     },
     "CSWC": {
-      "price": 23.43,
-      "time": "2026-04-23T19:24:17.310Z"
+      "price": 23.45,
+      "time": "2026-04-24T11:49:54.509Z"
     },
     "OTF": {
-      "price": 11.131,
-      "time": "2026-04-23T19:24:17.796Z"
+      "price": 11.1,
+      "time": "2026-04-24T11:49:55.022Z"
     },
     "TSLX": {
-      "price": 18.52,
-      "time": "2026-04-23T19:24:18.281Z"
+      "price": 18.55,
+      "time": "2026-04-24T11:49:55.543Z"
     },
     "ARCC": {
-      "price": 18.665,
-      "time": "2026-04-23T19:24:18.779Z"
+      "price": 18.62,
+      "time": "2026-04-24T11:49:56.071Z"
     },
     "VICI": {
-      "price": 28.45,
-      "time": "2026-04-23T19:24:19.257Z"
+      "price": 28.51,
+      "time": "2026-04-24T11:49:56.610Z"
     },
     "BXSL": {
-      "price": 23.84,
-      "time": "2026-04-23T19:24:19.729Z"
+      "price": 23.72,
+      "time": "2026-04-24T11:49:57.133Z"
     },
     "PEP": {
-      "price": 156.42,
-      "time": "2026-04-23T19:24:20.318Z"
+      "price": 155.7,
+      "time": "2026-04-24T11:49:57.758Z"
     },
     "OBDC": {
-      "price": 11.325,
-      "time": "2026-04-23T19:24:20.796Z"
+      "price": 11.35,
+      "time": "2026-04-24T11:49:58.285Z"
     },
     "AHRT": {
-      "price": 5.97,
-      "time": "2026-04-23T19:24:21.273Z"
+      "price": 6,
+      "time": "2026-04-24T11:49:58.822Z"
     },
     "C051.DE": {
-      "price": 47.04,
-      "time": "2026-04-23T19:24:13.585Z"
+      "price": 46.87,
+      "time": "2026-04-24T11:49:50.456Z"
     },
     "DIS.MI": {
-      "price": 7.65,
-      "time": "2026-04-23T19:24:11.636Z"
+      "price": 7.67,
+      "time": "2026-04-24T11:49:48.266Z"
     }
   },
-  "monthlyGoal": 1000
+  "monthlyGoal": 0
 }
