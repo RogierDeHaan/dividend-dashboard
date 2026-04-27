@@ -497,8 +497,9 @@
       "manual": true
     },
     "PEP": {
-      "price": 154.3,
-      "time": "2026-04-27T19:34:14.713Z"
+      "price": 154.25,
+      "time": "2026-04-27T19:40:38.380Z",
+      "manual": true
     },
     "OBDC": {
       "price": 11.11,
