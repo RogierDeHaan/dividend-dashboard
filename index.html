@@ -232,19 +232,26 @@ td.detail-cell{padding:0 !important;background:#080d1a;border-top:none}
 <!-- TOKEN SETUP OVERLAY -->
 <div id="token-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center">
   <div style="background:#0f1629;border:1px solid #d4a84344;border-radius:16px;padding:32px;max-width:480px;width:90%">
-    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#d4a843;margin-bottom:8px">GitHub verbinden</div>
-    <div style="font-size:13px;color:#4a5a7a;margin-bottom:20px;line-height:1.6">
-      Voer je GitHub Personal Access Token in om je portfolio op te slaan.<br>
-      Je token wordt alleen lokaal bewaard in je browser.<br>
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#d4a843;margin-bottom:20px">⚙ Instellingen</div>
+
+    <div style="font-size:11px;color:#d4a843;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">GitHub Opslag</div>
+    <div style="font-size:12px;color:#4a5a7a;margin-bottom:10px;line-height:1.5">
+      Personal Access Token om je portfolio op te slaan op GitHub.<br>
       <a href="https://github.com/settings/tokens/new" target="_blank" style="color:#60a5fa">Token aanmaken →</a>
     </div>
-    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">
-      <label style="font-size:10px;color:#3a4a6a;font-weight:700;letter-spacing:1px;text-transform:uppercase">Personal Access Token</label>
-      <input id="token-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-        style="background:#0a0f1e;border:1px solid #1e2e50;border-radius:7px;padding:10px 12px;color:#e8eaf0;font-size:13px;font-family:monospace;width:100%"
-        onkeydown="if(event.key==='Enter')saveToken()">
+    <input id="token-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+      style="background:#0a0f1e;border:1px solid #1e2e50;border-radius:7px;padding:10px 12px;color:#e8eaf0;font-size:13px;font-family:monospace;width:100%;margin-bottom:20px"
+      onkeydown="if(event.key==='Enter')saveToken()">
+
+    <div style="font-size:11px;color:#34d399;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Finnhub — Dividend Datums</div>
+    <div style="font-size:12px;color:#4a5a7a;margin-bottom:10px;line-height:1.5">
+      Gratis API key voor automatische ex-div en pay datums.<br>
+      <a href="https://finnhub.io/register" target="_blank" style="color:#60a5fa">Gratis registreren op finnhub.io →</a>
     </div>
-    <button onclick="saveToken()" style="background:linear-gradient(135deg,#d4a843,#b8860b);border:none;color:#0a0f1e;padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;font-family:inherit;width:100%">Verbinden met GitHub</button>
+    <input id="finnhub-input" type="password" placeholder="xxxxxxxxxxxxxxxxxxxxxxxx"
+      style="background:#0a0f1e;border:1px solid #1e2e50;border-radius:7px;padding:10px 12px;color:#e8eaf0;font-size:13px;font-family:monospace;width:100%;margin-bottom:24px">
+
+    <button onclick="saveToken()" style="background:linear-gradient(135deg,#d4a843,#b8860b);border:none;color:#0a0f1e;padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;font-family:inherit;width:100%">Opslaan</button>
   </div>
 </div>
 
@@ -332,6 +339,7 @@ const GH_FILE  = 'portfolio-data.json';
 const GH_API   = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
 
 let ghToken  = (localStorage.getItem('gh_token') || '').replace(/[^\x20-\x7E]/g, '').trim();
+let finnhubKey = (localStorage.getItem('finnhub_key') || '').replace(/[^\x20-\x7E]/g, '').trim();
 let ghSha    = null;   // nodig bij updates (GitHub vereist SHA van huidige versie)
 let ghSaving = false;
 let ghSaveQueued = false;
@@ -436,27 +444,32 @@ async function save() {
 }
 
 function showTokenSetup() {
-  const stored = localStorage.getItem('gh_token') || '';
   document.getElementById('token-overlay').style.display = 'flex';
   const inp = document.getElementById('token-input');
-  if (inp) inp.value = stored;
+  const fhInp = document.getElementById('finnhub-input');
+  if(inp) inp.value = ghToken || '';
+  if(fhInp) fhInp.value = finnhubKey || '';
 }
 
 function saveToken() {
   const raw = document.getElementById('token-input')?.value || '';
-  // Verwijder alle niet-ASCII tekens (onzichtbare tekens, zero-width spaces etc.)
   const t = raw.replace(/[^\x20-\x7E]/g, '').trim();
-  if (!t) return alert('Voer je token in.');
+  if(!t) return alert('Voer je GitHub token in.');
   ghToken = t;
   localStorage.setItem('gh_token', t);
+
+  const rawFh = document.getElementById('finnhub-input')?.value || '';
+  const fh = rawFh.replace(/[^\x20-\x7E]/g, '').trim();
+  if(fh) {
+    finnhubKey = fh;
+    localStorage.setItem('finnhub_key', fh);
+  }
+
   document.getElementById('token-overlay').style.display = 'none';
   load().then(()=>render());
 }
 
 function resetToken() {
-  if (!confirm('Token verwijderen? Je wordt gevraagd het opnieuw in te voeren.')) return;
-  ghToken = '';
-  localStorage.removeItem('gh_token');
   showTokenSetup();
 }
 
@@ -558,31 +571,45 @@ async function fetchPrice(yahooTicker) {
   return data?.chart?.result?.[0]?.meta?.regularMarketPrice || null;
 }
 
-// Dividend datums — v7 quote API
+// Dividend datums — Finnhub als primaire bron (geen proxy nodig)
 async function fetchDivDates(yahooTicker) {
-  const toDate = ts => (ts && ts > 100000) ? new Date(ts*1000).toISOString().split('T')[0] : '';
+  // Zet Yahoo ticker om naar Finnhub symbool (verwijder exchange suffix)
+  const symbol = yahooTicker.replace(/\.[A-Z]+$/, '');
 
-  // Probeer v7 quote
-  const data = await fetchWithProxy(
-    `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${yahooTicker}`
-  );
-  const q = data?.quoteResponse?.result?.[0];
-  if(q) {
-    const exDivDate = toDate(q.exDividendDate);
-    const payDate   = toDate(q.dividendDate);
-    if(exDivDate || payDate) return { exDivDate, payDate };
+  // Strategie 1: Finnhub (direct, geen proxy nodig, werkt voor US + EU stocks)
+  if(finnhubKey) {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const from  = new Date(Date.now() - 90*24*60*60*1000).toISOString().split('T')[0];
+      const to    = new Date(Date.now() + 180*24*60*60*1000).toISOString().split('T')[0];
+      const r = await fetch(
+        `https://finnhub.io/api/v1/stock/dividend2?symbol=${symbol}&token=${finnhubKey}`,
+        {signal: AbortSignal.timeout(8000)}
+      );
+      if(r.ok) {
+        const data = await r.json();
+        const divs = data.data || data || [];
+        if(divs.length) {
+          // Vind meest recente of aankomende betaling
+          const sorted = divs.sort((a,b)=>b.exDate?.localeCompare(a.exDate));
+          const upcoming = sorted.find(d => d.exDate >= today) || sorted[0];
+          if(upcoming) return {
+            exDivDate: upcoming.exDate   || '',
+            payDate:   upcoming.payDate  || upcoming.date || '',
+          };
+        }
+      }
+    } catch(e) {}
   }
 
-  // Fallback: chart meta
-  const chartData = await fetchWithProxy(
+  // Strategie 2: chart meta via proxy (fallback)
+  const data = await fetchWithProxy(
     `https://query1.finance.yahoo.com/v8/finance/chart/${yahooTicker}?interval=1d&range=1d`
   );
-  const meta = chartData?.chart?.result?.[0]?.meta;
+  const meta = data?.chart?.result?.[0]?.meta;
   if(meta) {
-    return {
-      exDivDate: toDate(meta.exDividendDate),
-      payDate:   toDate(meta.dividendDate),
-    };
+    const toDate = ts => (ts && ts > 100000) ? new Date(ts*1000).toISOString().split('T')[0] : '';
+    return { exDivDate: toDate(meta.exDividendDate), payDate: '' };
   }
   return null;
 }
