@@ -526,13 +526,13 @@ function fn(v,d=2) { return v===undefined?'—':v.toFixed(d); }
 
 // ─── LIVE PRICES ─────────────────────────────────────────────────────────────
 let priceLoading = false;
-async function fetchPrice(yahooTicker) {
+async function fetchPriceAndDates(yahooTicker) {
+  // Één request voor zowel koers als dividend datums
   const encoded = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${yahooTicker}?interval=1d&range=1d`);
   const proxies = [
     `https://corsproxy.io/?url=${encoded}`,
     `https://api.allorigins.win/raw?url=${encoded}`,
     `https://corsproxy.org/?url=${encoded}`,
-    `https://thingproxy.freeboard.io/fetch/https://query1.finance.yahoo.com/v8/finance/chart/${yahooTicker}?interval=1d&range=1d`,
   ];
   for(const proxy of proxies) {
     try {
@@ -545,70 +545,15 @@ async function fetchPrice(yahooTicker) {
       let data;
       try { data = JSON.parse(txt); } catch { continue; }
       if(data.contents) { try { data = JSON.parse(data.contents); } catch { continue; } }
-      const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-      if(price && price > 0) return price;
-    } catch(e) { /* try next proxy */ }
-  }
-  return null;
-}
-
-async function fetchDividendDates(yahooTicker) {
-  // Strategie 1: chart API met events=div (zelfde endpoint als koersen, werkt al)
-  const chartUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooTicker}?interval=1d&range=1y&events=div`;
-  const encoded1 = encodeURIComponent(chartUrl);
-  const proxies = [
-    `https://corsproxy.io/?url=${encoded1}`,
-    `https://api.allorigins.win/raw?url=${encoded1}`,
-    `https://corsproxy.org/?url=${encoded1}`,
-  ];
-
-  for(const proxy of proxies) {
-    try {
-      const ctrl = new AbortController();
-      setTimeout(()=>ctrl.abort(), 7000);
-      const r = await fetch(proxy, {signal: ctrl.signal});
-      if(!r.ok) continue;
-      const txt = await r.text();
-      let data;
-      try { data = JSON.parse(txt); } catch { continue; }
-      if(data.contents) { try { data = JSON.parse(data.contents); } catch { continue; } }
-
       const meta = data?.chart?.result?.[0]?.meta;
       if(!meta) continue;
-
-      const toDate = ts => ts ? new Date(ts*1000).toISOString().split('T')[0] : '';
-      const exDate  = toDate(meta.exDividendDate);   // ex-dividend datum
-      const payDate = toDate(meta.dividendDate);      // werkelijke betaaldatum
-
-      if(exDate || payDate) return { exDivDate: exDate, payDate };
-    } catch(e) { /* try next */ }
-  }
-
-  // Strategie 2: quoteSummary v11
-  const sumUrl = `https://query2.finance.yahoo.com/v11/finance/quoteSummary/${yahooTicker}?modules=calendarEvents`;
-  const encoded2 = encodeURIComponent(sumUrl);
-  const proxies2 = [
-    `https://corsproxy.io/?url=${encoded2}`,
-    `https://api.allorigins.win/raw?url=${encoded2}`,
-  ];
-  for(const proxy of proxies2) {
-    try {
-      const ctrl = new AbortController();
-      setTimeout(()=>ctrl.abort(), 7000);
-      const r = await fetch(proxy, {signal: ctrl.signal});
-      if(!r.ok) continue;
-      const txt = await r.text();
-      let data;
-      try { data = JSON.parse(txt); } catch { continue; }
-      if(data.contents) { try { data = JSON.parse(data.contents); } catch { continue; } }
-      const cal = data?.quoteSummary?.result?.[0]?.calendarEvents;
-      if(!cal) continue;
-      const toDate = ts => ts ? new Date(ts*1000).toISOString().split('T')[0] : '';
+      const toDate = ts => (ts && ts > 0) ? new Date(ts*1000).toISOString().split('T')[0] : '';
       return {
-        exDivDate: toDate(cal.exDividendDate?.raw),
-        payDate:   toDate(cal.dividendDate?.raw),
+        price:     meta.regularMarketPrice || null,
+        exDivDate: toDate(meta.exDividendDate),
+        payDate:   toDate(meta.dividendDate),
       };
-    } catch(e) { /* try next */ }
+    } catch(e) { /* try next proxy */ }
   }
   return null;
 }
@@ -620,16 +565,15 @@ async function refreshPrices() {
   let ok=0, fail=0;
   setPriceStatus('loading', 'Koersen laden…');
 
-  // Parallel in batches van 4
   const batchSize = 4;
   for(let i=0; i<holdings.length; i+=batchSize) {
     const batch = holdings.slice(i, i+batchSize);
     setPriceStatus('loading', `Koersen ${i+1}–${Math.min(i+batchSize,holdings.length)}/${holdings.length}…`);
-    const results = await Promise.allSettled(batch.map(h=>fetchPrice(h.yahooTicker)));
+    const results = await Promise.allSettled(batch.map(h=>fetchPriceAndDates(h.yahooTicker)));
     results.forEach((res,j)=>{
       const h = batch[j];
-      if(res.status==='fulfilled' && res.value) {
-        state.prices[h.yahooTicker] = {price:res.value, time:new Date().toISOString()};
+      if(res.status==='fulfilled' && res.value?.price) {
+        state.prices[h.yahooTicker] = {price:res.value.price, time:new Date().toISOString()};
         ok++;
       } else fail++;
     });
@@ -648,23 +592,23 @@ async function refreshDivDates() {
   const holdings = state.holdings.filter(h=>h.yahooTicker && h.dividendPerShare>0);
   let ok=0;
 
-  const batchSize = 3;
+  const batchSize = 4;
   for(let i=0; i<holdings.length; i+=batchSize) {
     const batch = holdings.slice(i, i+batchSize);
     if(btn) btn.textContent = `📅 ${i+1}–${Math.min(i+batchSize,holdings.length)}/${holdings.length}…`;
-    const results = await Promise.allSettled(batch.map(h=>fetchDividendDates(h.yahooTicker)));
+    const results = await Promise.allSettled(batch.map(h=>fetchPriceAndDates(h.yahooTicker)));
     results.forEach((res,j)=>{
       const h = batch[j];
       if(res.status==='fulfilled' && res.value) {
         const holding = state.holdings.find(x=>x.id===h.id);
-        if(holding) {
+        if(holding && (res.value.exDivDate || res.value.payDate)) {
           if(res.value.exDivDate) holding.exDivDate = res.value.exDivDate;
           if(res.value.payDate)   holding.payDate   = res.value.payDate;
           ok++;
         }
       }
     });
-    await new Promise(r=>setTimeout(r,400));
+    await new Promise(r=>setTimeout(r,300));
   }
   save();
   render();
