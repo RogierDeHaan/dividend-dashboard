@@ -317,9 +317,11 @@ let state = {
   selectedHolding: null,
   monthlyGoal: 0,
   chartInstances: {},
-  totalCardCurrency: "EUR",   // toggle EUR/USD voor totaalkaart
-  fxRate: null,               // EUR/USD wisselkoers
+  totalCardCurrency: "EUR",
+  fxRate: null,
   fxTime: null,
+  cashEur: 0,
+  cashUsd: 0,
 };
 
 // ─── GITHUB STORAGE ──────────────────────────────────────────────────────────
@@ -366,6 +368,8 @@ async function load() {
     state.transactions = data.transactions || SEED_TX.map((tx,i)=>({...tx,id:String(i+1)}));
     state.prices       = data.prices       || {};
     state.monthlyGoal  = data.monthlyGoal  || 0;
+    state.cashEur      = data.cashEur      || 0;
+    state.cashUsd      = data.cashUsd      || 0;
     setSyncStatus('ok', 'Gesynchroniseerd · ' + new Date().toLocaleTimeString('nl-NL'));
   } catch(e) {
     console.error('GitHub load fout:', e);
@@ -393,7 +397,7 @@ async function save() {
   setSyncStatus('saving', 'Opslaan…');
 
   const doSave = async (sha) => {
-    const data = { holdings:state.holdings, transactions:state.transactions, prices:state.prices, monthlyGoal:state.monthlyGoal };
+    const data = { holdings:state.holdings, transactions:state.transactions, prices:state.prices, monthlyGoal:state.monthlyGoal, cashEur:state.cashEur, cashUsd:state.cashUsd };
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
     const body = { message:'Portfolio update', content, ...(sha ? {sha} : {}) };
     return fetch(GH_API, {
@@ -608,6 +612,13 @@ async function fetchFxRate() {
   }
 }
 
+function saveCash() {
+  state.cashEur = parseFloat(document.getElementById('cash-eur')?.value)||0;
+  state.cashUsd = parseFloat(document.getElementById('cash-usd')?.value)||0;
+  save();
+  renderOverview(allComputed());
+}
+
 function toggleTotalCurrency() {
   state.totalCardCurrency = state.totalCardCurrency === 'EUR' ? 'USD' : 'EUR';
   if (!state.fxRate) fetchFxRate().then(()=>renderOverview(allComputed()));
@@ -660,7 +671,7 @@ function renderOverview(computed) {
     ? eurAmt + usdAmt * fx
     : eurAmt * fxInv + usdAmt;
 
-  const totVal  = toTC(ea.val,  ua.val);
+  const totVal  = toTC(ea.val + state.cashEur,  ua.val + state.cashUsd);
   const totCost = toTC(ea.cost, ua.cost);
   const totDiv  = toTC(ea.div,  ua.div);
   const totPnl  = totVal - totCost;
@@ -684,10 +695,26 @@ function renderOverview(computed) {
       </div>
     </div>
     <div class="kpi-metrics" style="grid-template-columns:repeat(4,1fr)">
-      <div><div class="kpi-label">Totale Waarde</div><div class="kpi-value gold">${fc(totVal,tc)}</div></div>
+      <div><div class="kpi-label">Totale Waarde incl. cash</div><div class="kpi-value gold">${fc(totVal,tc)}</div></div>
       <div><div class="kpi-label">Jaarl. Dividend</div><div class="kpi-value green">${fc(totDiv,tc)}</div></div>
       <div><div class="kpi-label">Portfolio Yield</div><div class="kpi-value" style="color:#a78bfa">${fn(totYld)}%</div></div>
       <div><div class="kpi-label">Koersresultaat</div><div class="kpi-value ${totPnl>=0?'green':'red'}">${fc(totPnl,tc)} <span style="font-size:12px">(${fp(totPnlPct)})</span></div></div>
+    </div>
+    <div style="border-top:1px solid #1a2540;margin-top:12px;padding-top:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <span style="font-size:10px;color:#3a4a6a;letter-spacing:1px;font-weight:700">CASH SALDO</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:11px;color:#4a5a7a">EUR</span>
+        <input type="number" id="cash-eur" value="${state.cashEur||''}" placeholder="0.00" min="0" step="0.01"
+          style="width:100px;background:#0a0f1e;border:1px solid #1e2e50;border-radius:6px;padding:4px 8px;color:#60a5fa;font-size:12px;font-family:inherit"
+          onchange="saveCash()">
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:11px;color:#4a5a7a">USD</span>
+        <input type="number" id="cash-usd" value="${state.cashUsd||''}" placeholder="0.00" min="0" step="0.01"
+          style="width:100px;background:#0a0f1e;border:1px solid #1e2e50;border-radius:6px;padding:4px 8px;color:#34d399;font-size:12px;font-family:inherit"
+          onchange="saveCash()">
+      </div>
+      <span style="font-size:10px;color:#3a4a6a">· wijzigingen worden automatisch opgeslagen</span>
     </div>
   </div>`;
 
