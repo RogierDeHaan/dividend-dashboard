@@ -576,23 +576,9 @@ async function fetchDividendDates(yahooTicker) {
       const meta = data?.chart?.result?.[0]?.meta;
       if(!meta) continue;
 
-      // Ex-div datum zit in meta.exDividendDate (Unix timestamp)
-      const exTs  = meta.exDividendDate;
-      // Pay datum: zoek in events.dividends de meest recente/toekomstige
-      const divEvents = data?.chart?.result?.[0]?.events?.dividends;
-      let payTs = null;
-      if(divEvents) {
-        const now = Date.now()/1000;
-        // Zoek de meest recente betaaldatum (dichtst bij nu)
-        const timestamps = Object.keys(divEvents).map(Number).sort((a,b)=>b-a);
-        const recent = timestamps.find(t => t >= now - 90*86400); // laatste 90 dagen of toekomst
-        if(recent) payTs = recent;
-        else if(timestamps.length) payTs = timestamps[0];
-      }
-
       const toDate = ts => ts ? new Date(ts*1000).toISOString().split('T')[0] : '';
-      const exDate  = toDate(exTs);
-      const payDate = toDate(payTs);
+      const exDate  = toDate(meta.exDividendDate);   // ex-dividend datum
+      const payDate = toDate(meta.dividendDate);      // werkelijke betaaldatum
 
       if(exDate || payDate) return { exDivDate: exDate, payDate };
     } catch(e) { /* try next */ }
@@ -1054,7 +1040,20 @@ function renderHoldings(computed) {
 
   const filtered = (state.curFilter==='all'?computed:computed.filter(h=>h.currency===state.curFilter))
     .slice().sort((a,b)=>{
-      const COLS={ticker:h=>h.ticker,name:h=>h.name||'',type:h=>h.type,currency:h=>h.currency,shares:h=>h.shares,avgCost:h=>h.avgCost,currentPrice:h=>h.currentPrice,yoc:h=>h.yoc,annual:h=>h.annualDiv,freq:h=>(FREQ[h.frequency]||FREQ.quarterly).factor,exdiv:h=>h.exDivDate||'',paydate:h=>h.payDate||''};
+      const COLS={
+        ticker:   h=>h.ticker,
+        name:     h=>h.name||'',
+        type:     h=>h.type,
+        currency: h=>h.currency,
+        shares:   h=>h.shares,
+        avgCost:  h=>h.avgCost,
+        currentPrice: h=>h.currentPrice,
+        yoc:      h=>h.yoc,
+        annual:   h=>h.annualDiv,
+        freq:     h=>(FREQ[h.frequency]||FREQ.quarterly).factor,
+        exdiv:    h=>h.exDivDate||'9999-99-99',   // leeg → altijd onderaan
+        paydate:  h=>h.payDate||'9999-99-99',      // leeg → altijd onderaan
+      };
       const fnS=COLS[state.sortCol]||(h=>h.ticker);
       const va=fnS(a),vb=fnS(b);
       const c=typeof va==='string'?va.localeCompare(vb):va-vb;
