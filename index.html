@@ -947,7 +947,7 @@ function renderHoldings(computed) {
 
   const filtered = (state.curFilter==='all'?computed:computed.filter(h=>h.currency===state.curFilter))
     .slice().sort((a,b)=>{
-      const COLS={ticker:h=>h.ticker,name:h=>h.name||'',type:h=>h.type,currency:h=>h.currency,shares:h=>h.shares,avgCost:h=>h.avgCost,currentPrice:h=>h.currentPrice,yoc:h=>h.yoc,annual:h=>h.annualDiv,freq:h=>(FREQ[h.frequency]||FREQ.quarterly).factor};
+      const COLS={ticker:h=>h.ticker,name:h=>h.name||'',type:h=>h.type,currency:h=>h.currency,shares:h=>h.shares,avgCost:h=>h.avgCost,currentPrice:h=>h.currentPrice,yoc:h=>h.yoc,annual:h=>h.annualDiv,freq:h=>(FREQ[h.frequency]||FREQ.quarterly).factor,exdiv:h=>h.exDivDate||'',paydate:h=>h.payDate||''};
       const fnS=COLS[state.sortCol]||(h=>h.ticker);
       const va=fnS(a),vb=fnS(b);
       const c=typeof va==='string'?va.localeCompare(vb):va-vb;
@@ -962,7 +962,18 @@ function renderHoldings(computed) {
 
   const TYPE_LBL = {stock:'Aandeel',etf:'ETF',reit:'REIT',bdc:'BDC',other:'Overig'};
   const TYPE_CSS = {stock:'stock',etf:'etf',reit:'reit',bdc:'bdc',other:'other'};
-  const COLS_COUNT = 11;
+  const COLS_COUNT = 13;
+
+  const fmtDate = d => {
+    if(!d) return '<span style="color:#2a3a5a">—</span>';
+    const dt = new Date(d);
+    const today = new Date();
+    const diff = Math.ceil((dt-today)/(1000*60*60*24));
+    const label = dt.toLocaleDateString('nl-NL',{day:'2-digit',month:'short'});
+    const color = diff<0?'#4a5a7a':diff<=7?'#f59e0b':diff<=30?'#34d399':'#8899bb';
+    const tag = diff>=0&&diff<=30?` <span style="font-size:9px;background:${color}22;color:${color};border-radius:3px;padding:1px 4px">${diff}d</span>`:'';
+    return `<span style="color:${color}">${label}</span>${tag}`;
+  };
 
   const rows = filtered.map(h=>{
     const pnlSign=h.pnlPct>=0?'+':'';
@@ -970,11 +981,10 @@ function renderHoldings(computed) {
     const priceClass=pd?'price-live':'price-stale';
     const priceAge=pd?'<span style="font-size:9px;color:#3a4a6a;margin-left:4px">↺</span>':'';
     const isSelected=state.selectedHolding===h.id;
-    const typeLabel=TYPE_LBL[h.type]||h.type;
 
     const mainRow = `<tr id="row-${h.id}" class="${isSelected?'selected-row':''}" onclick="toggleHolding('${h.id}')" style="cursor:pointer">
       <td class="mono gold fw7">${h.ticker}</td>
-      <td style="color:#a0b0c8;max-width:150px;overflow:hidden;text-overflow:ellipsis">${h.name||'—'}</td>
+      <td style="color:#a0b0c8;max-width:130px;overflow:hidden;text-overflow:ellipsis">${h.name||'—'}</td>
       <td><span class="badge badge-${TYPE_CSS[h.type]||'other'}">${TYPE_LBL[h.type]||h.type.toUpperCase()}</span></td>
       <td><span class="badge badge-${h.currency.toLowerCase()}">${h.currency}</span></td>
       <td class="grey">${fn(h.shares,h.shares%1===0?0:3)}</td>
@@ -983,6 +993,8 @@ function renderHoldings(computed) {
       <td class="gold fw7">${h.dividendPerShare>0?fp(h.yoc).replace('+',''):'—'}</td>
       <td class="blue fw7">${h.dividendPerShare>0?fc(h.annualDiv,h.currency):'—'}</td>
       <td class="grey">${(FREQ[h.frequency]||FREQ.quarterly).label}</td>
+      <td>${fmtDate(h.exDivDate)}</td>
+      <td>${fmtDate(h.payDate)}</td>
       <td onclick="event.stopPropagation()">
         <div class="flex gap8">
           <button class="btn btn-blue btn-sm" onclick="openModal('buy','${h.id}')">Koop</button>
@@ -1008,7 +1020,8 @@ function renderHoldings(computed) {
         <thead><tr>
           ${th('Ticker','ticker')}${th('Naam','name')}${th('Type','type')}${th('Val.','currency')}
           ${th('Aandelen','shares')}${th('Gm. Koers','avgCost')}${th('Huidig','currentPrice')}
-          ${th('YoC','yoc')}${th('Jaarl. Div','annual')}${th('Freq.','freq')}<th></th>
+          ${th('YoC','yoc')}${th('Jaarl. Div','annual')}${th('Freq.','freq')}
+          ${th('Ex-div','exdiv')}${th('Pay datum','paydate')}<th></th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -1428,6 +1441,8 @@ function openModal(mode, hid) {
         <div class="form-group"><label>Div. per aandeel</label><input id="f-div" type="number" value="${h.dividendPerShare}" min="0" step="0.01"></div>
         <div class="form-group"><label>Frequentie</label><select id="f-freq">${Object.entries(FREQ).map(([k,v])=>`<option value="${k}" ${h.frequency===k?'selected':''}>${v.label}</option>`).join('')}</select></div>
         <div class="form-group"><label>Eerste div. maand</label><select id="f-sm">${MO.map((m,i)=>`<option value="${i}" ${h.startMonth===i?'selected':''}>${m}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Ex-dividend datum</label><input type="date" id="f-exdate" value="${h.exDivDate||''}"></div>
+        <div class="form-group"><label>Pay datum</label><input type="date" id="f-paydate" value="${h.payDate||''}"></div>
         <div class="form-group full"><label>Sector</label><input id="f-sector" value="${h.sector||''}"></div>
         <div class="form-group full" style="border-top:1px solid #1a2540;padding-top:10px;margin-top:4px">
           <label>Huidige koers handmatig invoeren (${h.currency}) <span style="color:#3a4a6a;font-weight:400">— als live koersen niet werken</span></label>
@@ -1507,6 +1522,8 @@ function saveEdit(hid) {
   h.frequency = document.getElementById('f-freq')?.value||h.frequency;
   h.startMonth = parseInt(document.getElementById('f-sm')?.value)||h.startMonth;
   h.sector = document.getElementById('f-sector')?.value?.trim()||h.sector;
+  h.exDivDate = document.getElementById('f-exdate')?.value||'';
+  h.payDate   = document.getElementById('f-paydate')?.value||'';
   // Manual price override
   const manPrice = parseFloat(document.getElementById('f-manprice')?.value);
   if(manPrice > 0) {
