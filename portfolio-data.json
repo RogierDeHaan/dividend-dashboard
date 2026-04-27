@@ -10,7 +10,8 @@
       "dividendPerShare": 0.23,
       "frequency": "annual",
       "startMonth": 4,
-      "sector": "Scheepvaart"
+      "sector": "Scheepvaart",
+      "payDate": "2025-11-17"
     },
     {
       "id": "nn",
@@ -22,7 +23,8 @@
       "dividendPerShare": 2.5,
       "frequency": "semiannual",
       "startMonth": 4,
-      "sector": "Verzekeringen"
+      "sector": "Verzekeringen",
+      "payDate": "2025-08-12"
     },
     {
       "id": "asrnl",
@@ -34,7 +36,8 @@
       "dividendPerShare": 2.14,
       "frequency": "semiannual",
       "startMonth": 4,
-      "sector": "Verzekeringen"
+      "sector": "Verzekeringen",
+      "payDate": "2025-08-27"
     },
     {
       "id": "hema",
@@ -58,7 +61,8 @@
       "dividendPerShare": 2.07,
       "frequency": "annual",
       "startMonth": 11,
-      "sector": "Europa Dividend"
+      "sector": "Europa Dividend",
+      "payDate": "2025-12-09"
     },
     {
       "id": "flxd",
@@ -70,7 +74,8 @@
       "dividendPerShare": 0.7,
       "frequency": "quarterly",
       "startMonth": 2,
-      "sector": "Europa Dividend"
+      "sector": "Europa Dividend",
+      "payDate": "2026-03-12"
     },
     {
       "id": "cat",
@@ -82,7 +87,8 @@
       "dividendPerShare": 1.51,
       "frequency": "quarterly",
       "startMonth": 0,
-      "sector": "Industrie"
+      "sector": "Industrie",
+      "payDate": "2026-04-20"
     },
     {
       "id": "lpth",
@@ -106,7 +112,8 @@
       "dividendPerShare": 0.27,
       "frequency": "monthly",
       "startMonth": 0,
-      "sector": "REIT Retail"
+      "sector": "REIT Retail",
+      "payDate": "2026-03-31"
     },
     {
       "id": "main",
@@ -118,7 +125,8 @@
       "dividendPerShare": 0.26,
       "frequency": "monthly",
       "startMonth": 0,
-      "sector": "BDC"
+      "sector": "BDC",
+      "payDate": "2026-04-08"
     },
     {
       "id": "o",
@@ -130,7 +138,8 @@
       "dividendPerShare": 0.27,
       "frequency": "monthly",
       "startMonth": 0,
-      "sector": "REIT Retail"
+      "sector": "REIT Retail",
+      "payDate": "2026-03-31"
     },
     {
       "id": "cswc",
@@ -142,7 +151,8 @@
       "dividendPerShare": 0.19,
       "frequency": "monthly",
       "startMonth": 0,
-      "sector": "BDC"
+      "sector": "BDC",
+      "payDate": "2026-04-15"
     },
     {
       "id": "otf",
@@ -154,7 +164,8 @@
       "dividendPerShare": 0.35,
       "frequency": "quarterly",
       "startMonth": 2,
-      "sector": "BDC"
+      "sector": "BDC",
+      "payDate": "2026-03-31"
     },
     {
       "id": "tslx",
@@ -166,7 +177,8 @@
       "dividendPerShare": 0.46,
       "frequency": "quarterly",
       "startMonth": 1,
-      "sector": "BDC"
+      "sector": "BDC",
+      "payDate": "2026-03-16"
     },
     {
       "id": "arcc",
@@ -178,7 +190,8 @@
       "dividendPerShare": 0.48,
       "frequency": "quarterly",
       "startMonth": 2,
-      "sector": "BDC"
+      "sector": "BDC",
+      "payDate": "2026-03-13"
     },
     {
       "id": "vici",
@@ -190,7 +203,8 @@
       "dividendPerShare": 0.45,
       "frequency": "quarterly",
       "startMonth": 2,
-      "sector": "REIT Gaming"
+      "sector": "REIT Gaming",
+      "payDate": "2026-03-19"
     },
     {
       "id": "bxsl",
@@ -202,7 +216,8 @@
       "dividendPerShare": 0.77,
       "frequency": "quarterly",
       "startMonth": 2,
-      "sector": "BDC"
+      "sector": "BDC",
+      "payDate": "2026-03-31"
     },
     {
       "id": "pep",
@@ -214,7 +229,8 @@
       "dividendPerShare": 1.42,
       "frequency": "quarterly",
       "startMonth": 2,
-      "sector": "Consumentengoed"
+      "sector": "Consumentengoed",
+      "payDate": "2026-03-06"
     },
     {
       "id": "obdc",
@@ -226,7 +242,8 @@
       "dividendPerShare": 0.37,
       "frequency": "quarterly",
       "startMonth": 1,
-      "sector": "BDC"
+      "sector": "BDC",
+      "payDate": "2026-03-31"
     },
     {
       "id": "ahrt",
@@ -238,7 +255,8 @@
       "dividendPerShare": 0.14,
       "frequency": "quarterly",
       "startMonth": 2,
-      "sector": "REIT"
+      "sector": "REIT",
+      "payDate": "2026-03-26"
     }
   ],
   "transactions": [
