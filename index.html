@@ -198,6 +198,7 @@ td.detail-cell{padding:0 !important;background:#080d1a;border-top:none}
     <div id="sync-status" style="display:flex;align-items:center;gap:6px;font-size:11px;color:#4a5a7a"><span class="dot dot-grey" id="sync-dot"></span><span id="sync-text">Verbinden…</span></div>
     <button class="btn btn-outline btn-sm" onclick="resetToken()" title="GitHub token instellen" style="font-size:16px;padding:4px 10px">⚙</button>
     <button class="btn btn-outline btn-sm" onclick="refreshPrices()">↻ Live koersen</button>
+    <button id="btn-divdates" class="btn btn-outline btn-sm" onclick="refreshDivDates()">📅 Div-datums</button>
     <button class="btn btn-gold btn-sm" onclick="openModal('buy')">+ Aankoop</button>
     <button class="btn btn-outline btn-sm" onclick="openModal('sell')">− Verkoop</button>
     <button class="btn btn-outline btn-sm" onclick="openModal('add')">⚙ Positie</button>
@@ -585,39 +586,56 @@ async function fetchDividendDates(yahooTicker) {
 async function refreshPrices() {
   if(priceLoading) return;
   priceLoading = true;
-  const holdings = state.holdings;
-  let ok=0, fail=0, divOk=0;
-  for(let i=0; i<holdings.length; i++) {
-    const h = holdings[i];
-    if(!h.yahooTicker) continue;
-    setPriceStatus('loading', `Laden ${i+1}/${holdings.length}: ${h.ticker}…`);
+  const holdings = state.holdings.filter(h=>h.yahooTicker);
+  let ok=0, fail=0;
+  setPriceStatus('loading', 'Koersen laden…');
 
-    // Koers ophalen
-    const price = await fetchPrice(h.yahooTicker);
-    if(price) {
-      state.prices[h.yahooTicker] = {price, time: new Date().toISOString()};
-      ok++;
-    } else fail++;
-
-    // Dividend datums ophalen
-    if(h.dividendPerShare > 0) {
-      const dates = await fetchDividendDates(h.yahooTicker);
-      if(dates) {
-        const holding = state.holdings.find(x=>x.id===h.id);
-        if(holding) {
-          if(dates.exDivDate) { holding.exDivDate = dates.exDivDate; divOk++; }
-          if(dates.payDate)   { holding.payDate   = dates.payDate; }
-        }
-      }
-    }
-
-    await new Promise(r=>setTimeout(r,450));
+  // Parallel in batches van 4
+  const batchSize = 4;
+  for(let i=0; i<holdings.length; i+=batchSize) {
+    const batch = holdings.slice(i, i+batchSize);
+    setPriceStatus('loading', `Koersen ${i+1}–${Math.min(i+batchSize,holdings.length)}/${holdings.length}…`);
+    const results = await Promise.allSettled(batch.map(h=>fetchPrice(h.yahooTicker)));
+    results.forEach((res,j)=>{
+      const h = batch[j];
+      if(res.status==='fulfilled' && res.value) {
+        state.prices[h.yahooTicker] = {price:res.value, time:new Date().toISOString()};
+        ok++;
+      } else fail++;
+    });
+    await new Promise(r=>setTimeout(r,300));
   }
   save();
   priceLoading = false;
-  if(ok > 0) setPriceStatus('ok', `${ok} koersen${divOk>0?` · ${divOk} div-datums`:''}${fail>0?' ('+fail+' mislukt)':''} bijgewerkt · ${new Date().toLocaleTimeString('nl-NL')}`);
-  else setPriceStatus('err', 'Laden mislukt — zie tip onderaan Holdings');
+  if(ok>0) setPriceStatus('ok', `${ok} koersen bijgewerkt${fail>0?' ('+fail+' mislukt)':''} · ${new Date().toLocaleTimeString('nl-NL')}`);
+  else setPriceStatus('err', 'Koersen laden mislukt');
   render();
+}
+
+async function refreshDivDates() {
+  const btn = document.getElementById('btn-divdates');
+  if(btn) { btn.disabled=true; btn.textContent='📅 Laden…'; }
+  const holdings = state.holdings.filter(h=>h.yahooTicker && h.dividendPerShare>0);
+  let ok=0;
+
+  for(let i=0; i<holdings.length; i++) {
+    const h = holdings[i];
+    if(btn) btn.textContent = `📅 ${i+1}/${holdings.length}…`;
+    const dates = await fetchDividendDates(h.yahooTicker);
+    if(dates) {
+      const holding = state.holdings.find(x=>x.id===h.id);
+      if(holding) {
+        if(dates.exDivDate) holding.exDivDate = dates.exDivDate;
+        if(dates.payDate)   holding.payDate   = dates.payDate;
+        ok++;
+      }
+    }
+    await new Promise(r=>setTimeout(r,350));
+  }
+  save();
+  render();
+  if(btn) { btn.disabled=false; btn.textContent=`📅 Div-datums (${ok} bijgewerkt)`; }
+  setTimeout(()=>{ if(btn) btn.textContent='📅 Div-datums'; }, 4000);
 }
 
 function setPriceStatus(s, msg) {
@@ -953,7 +971,7 @@ function _insertDetailRow(h) {
   tr.className = 'detail-row';
   tr.id = 'detail-row-' + h.id;
   const td = document.createElement('td');
-  td.colSpan = 11;
+  td.colSpan = 13;
   td.className = 'detail-cell';
   td.innerHTML = '<div class="detail-panel"><div id="detail-inner"></div></div>';
   tr.appendChild(td);
