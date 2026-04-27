@@ -11,7 +11,8 @@
       "frequency": "annual",
       "startMonth": 4,
       "sector": "Scheepvaart",
-      "payDate": "2025-11-17"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "nn",
@@ -24,7 +25,8 @@
       "frequency": "semiannual",
       "startMonth": 4,
       "sector": "Verzekeringen",
-      "payDate": "2025-08-12"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "asrnl",
@@ -37,7 +39,8 @@
       "frequency": "semiannual",
       "startMonth": 4,
       "sector": "Verzekeringen",
-      "payDate": "2025-08-27"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "hema",
@@ -62,7 +65,8 @@
       "frequency": "annual",
       "startMonth": 11,
       "sector": "Europa Dividend",
-      "payDate": "2025-12-09"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "flxd",
@@ -75,7 +79,8 @@
       "frequency": "quarterly",
       "startMonth": 2,
       "sector": "Europa Dividend",
-      "payDate": "2026-03-12"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "cat",
@@ -88,7 +93,8 @@
       "frequency": "quarterly",
       "startMonth": 0,
       "sector": "Industrie",
-      "payDate": "2026-04-20"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "lpth",
@@ -113,7 +119,8 @@
       "frequency": "monthly",
       "startMonth": 0,
       "sector": "REIT Retail",
-      "payDate": "2026-03-31"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "main",
@@ -126,7 +133,8 @@
       "frequency": "monthly",
       "startMonth": 0,
       "sector": "BDC",
-      "payDate": "2026-04-08"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "o",
@@ -139,7 +147,8 @@
       "frequency": "monthly",
       "startMonth": 0,
       "sector": "REIT Retail",
-      "payDate": "2026-03-31"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "cswc",
@@ -152,7 +161,8 @@
       "frequency": "monthly",
       "startMonth": 0,
       "sector": "BDC",
-      "payDate": "2026-04-15"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "otf",
@@ -165,7 +175,8 @@
       "frequency": "quarterly",
       "startMonth": 2,
       "sector": "BDC",
-      "payDate": "2026-03-31"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "tslx",
@@ -178,7 +189,8 @@
       "frequency": "quarterly",
       "startMonth": 1,
       "sector": "BDC",
-      "payDate": "2026-03-16"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "arcc",
@@ -444,83 +456,83 @@
   "prices": {
     "NN.AS": {
       "price": 73.34,
-      "time": "2026-04-27T20:41:56.289Z"
+      "time": "2026-04-27T20:47:09.967Z"
     },
     "ASRNL.AS": {
       "price": 64,
-      "time": "2026-04-27T20:41:56.289Z"
+      "time": "2026-04-27T20:47:09.967Z"
     },
     "HEMA.L": {
       "price": 17.671,
-      "time": "2026-04-27T20:41:56.289Z"
+      "time": "2026-04-27T20:47:09.967Z"
     },
     "FLXD.L": {
       "price": 31.73,
-      "time": "2026-04-27T20:41:56.596Z"
+      "time": "2026-04-27T20:47:17.385Z"
     },
     "CAT": {
       "price": 828.79,
-      "time": "2026-04-27T20:41:56.596Z"
+      "time": "2026-04-27T20:47:17.385Z"
     },
     "LPTH": {
       "price": 13.99,
-      "time": "2026-04-27T20:41:56.596Z"
+      "time": "2026-04-27T20:47:17.385Z"
     },
     "ADC": {
       "price": 75.98,
-      "time": "2026-04-27T20:41:56.905Z"
+      "time": "2026-04-27T20:47:24.811Z"
     },
     "MAIN": {
       "price": 53.94,
-      "time": "2026-04-27T20:41:56.905Z"
+      "time": "2026-04-27T20:47:24.812Z"
     },
     "O": {
       "price": 62.75,
-      "time": "2026-04-27T20:41:56.905Z"
+      "time": "2026-04-27T20:47:24.812Z"
     },
     "CSWC": {
       "price": 23.62,
-      "time": "2026-04-27T20:41:56.905Z"
+      "time": "2026-04-27T20:47:24.812Z"
     },
     "OTF": {
       "price": 10.82,
-      "time": "2026-04-27T20:41:57.213Z"
+      "time": "2026-04-27T20:47:32.227Z"
     },
     "TSLX": {
       "price": 18.81,
-      "time": "2026-04-27T20:41:57.213Z"
+      "time": "2026-04-27T20:47:32.227Z"
     },
     "ARCC": {
       "price": 18.61,
-      "time": "2026-04-27T20:41:57.213Z"
+      "time": "2026-04-27T20:47:32.227Z"
     },
     "VICI": {
       "price": 28.44,
-      "time": "2026-04-27T20:41:57.213Z"
+      "time": "2026-04-27T20:47:32.227Z"
     },
     "BXSL": {
       "price": 23.78,
-      "time": "2026-04-27T20:41:57.858Z"
+      "time": "2026-04-27T20:47:39.606Z"
     },
     "PEP": {
       "price": 154.1,
-      "time": "2026-04-27T20:41:57.858Z"
+      "time": "2026-04-27T20:47:39.606Z"
     },
     "OBDC": {
       "price": 11.19,
-      "time": "2026-04-27T20:41:57.858Z"
+      "time": "2026-04-27T20:47:39.606Z"
     },
     "AHRT": {
       "price": 6.07,
-      "time": "2026-04-27T20:41:57.858Z"
+      "time": "2026-04-27T20:47:39.606Z"
     },
     "C051.DE": {
       "price": 46.805,
-      "time": "2026-04-27T20:41:56.596Z"
+      "time": "2026-04-27T20:47:17.385Z"
     },
     "DIS.MI": {
       "price": 7.555,
-      "time": "2026-04-27T20:41:56.289Z"
+      "time": "2026-04-27T20:47:09.967Z"
     }
   },
   "monthlyGoal": 0,
