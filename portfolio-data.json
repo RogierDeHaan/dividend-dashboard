@@ -425,8 +425,9 @@
   ],
   "prices": {
     "NN.AS": {
-      "price": 73.34,
-      "time": "2026-04-27T19:34:06.640Z"
+      "price": 73.62,
+      "time": "2026-04-27T19:37:58.749Z",
+      "manual": true
     },
     "ASRNL.AS": {
       "price": 64.48,
