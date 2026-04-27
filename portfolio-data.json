@@ -522,5 +522,7 @@
       "manual": true
     }
   },
-  "monthlyGoal": 0
+  "monthlyGoal": 0,
+  "cashEur": 417.34,
+  "cashUsd": 0
 }
