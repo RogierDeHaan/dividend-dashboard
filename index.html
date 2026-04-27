@@ -550,33 +550,41 @@ async function fetchWithProxy(url) {
   return null;
 }
 
-async function fetchPriceAndDates(yahooTicker) {
-  // Prijs via chart API (werkt goed)
+// Snelle prijsfetch — alleen chart API
+async function fetchPrice(yahooTicker) {
+  const data = await fetchWithProxy(
+    `https://query1.finance.yahoo.com/v8/finance/chart/${yahooTicker}?interval=1d&range=1d`
+  );
+  return data?.chart?.result?.[0]?.meta?.regularMarketPrice || null;
+}
+
+// Dividend datums — v7 quote API
+async function fetchDivDates(yahooTicker) {
+  const toDate = ts => (ts && ts > 100000) ? new Date(ts*1000).toISOString().split('T')[0] : '';
+
+  // Probeer v7 quote
+  const data = await fetchWithProxy(
+    `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${yahooTicker}`
+  );
+  const q = data?.quoteResponse?.result?.[0];
+  if(q) {
+    const exDivDate = toDate(q.exDividendDate);
+    const payDate   = toDate(q.dividendDate);
+    if(exDivDate || payDate) return { exDivDate, payDate };
+  }
+
+  // Fallback: chart meta
   const chartData = await fetchWithProxy(
     `https://query1.finance.yahoo.com/v8/finance/chart/${yahooTicker}?interval=1d&range=1d`
   );
-  const price = chartData?.chart?.result?.[0]?.meta?.regularMarketPrice || null;
-
-  // Dividend datums via v7 quote API
-  const toDate = ts => (ts && ts > 100000) ? new Date(ts*1000).toISOString().split('T')[0] : '';
-  let exDivDate = '', payDate = '';
-
-  const quoteData = await fetchWithProxy(
-    `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${yahooTicker}&fields=exDividendDate,dividendDate`
-  );
-  const q = quoteData?.quoteResponse?.result?.[0];
-  if(q) {
-    exDivDate = toDate(q.exDividendDate);
-    payDate   = toDate(q.dividendDate);
+  const meta = chartData?.chart?.result?.[0]?.meta;
+  if(meta) {
+    return {
+      exDivDate: toDate(meta.exDividendDate),
+      payDate:   toDate(meta.dividendDate),
+    };
   }
-
-  // Fallback: probeer uit chart meta als v7 niets geeft
-  if(!exDivDate && !payDate) {
-    const meta = chartData?.chart?.result?.[0]?.meta;
-    if(meta) exDivDate = toDate(meta.exDividendDate);
-  }
-
-  return { price, exDivDate, payDate };
+  return null;
 }
 
 async function refreshPrices() {
@@ -590,11 +598,11 @@ async function refreshPrices() {
   for(let i=0; i<holdings.length; i+=batchSize) {
     const batch = holdings.slice(i, i+batchSize);
     setPriceStatus('loading', `Koersen ${i+1}–${Math.min(i+batchSize,holdings.length)}/${holdings.length}…`);
-    const results = await Promise.allSettled(batch.map(h=>fetchPriceAndDates(h.yahooTicker)));
+    const results = await Promise.allSettled(batch.map(h=>fetchPrice(h.yahooTicker)));
     results.forEach((res,j)=>{
       const h = batch[j];
-      if(res.status==='fulfilled' && res.value?.price) {
-        state.prices[h.yahooTicker] = {price:res.value.price, time:new Date().toISOString()};
+      if(res.status==='fulfilled' && res.value) {
+        state.prices[h.yahooTicker] = {price:res.value, time:new Date().toISOString()};
         ok++;
       } else fail++;
     });
@@ -613,24 +621,18 @@ async function refreshDivDates() {
   const holdings = state.holdings.filter(h=>h.yahooTicker && h.dividendPerShare>0);
   let ok=0;
 
-  const batchSize = 3;
-  for(let i=0; i<holdings.length; i+=batchSize) {
-    const batch = holdings.slice(i, i+batchSize);
-    if(btn) btn.textContent = `📅 ${i+1}–${Math.min(i+batchSize,holdings.length)}/${holdings.length}…`;
-    const results = await Promise.allSettled(batch.map(h=>fetchPriceAndDates(h.yahooTicker)));
-    results.forEach((res,j)=>{
-      const h = batch[j];
-      if(res.status==='fulfilled' && res.value) {
-        const holding = state.holdings.find(x=>x.id===h.id);
-        if(holding) {
-          // Altijd updaten (ook als leeg — zodat oude verkeerde waarden gewist worden)
-          holding.exDivDate = res.value.exDivDate || holding.exDivDate || '';
-          holding.payDate   = res.value.payDate   || '';
-          if(res.value.exDivDate || res.value.payDate) ok++;
-        }
-      }
-    });
-    await new Promise(r=>setTimeout(r,400));
+  for(let i=0; i<holdings.length; i++) {
+    const h = holdings[i];
+    if(btn) btn.textContent = `📅 ${i+1}/${holdings.length}…`;
+    const dates = await fetchDivDates(h.yahooTicker);
+    const holding = state.holdings.find(x=>x.id===h.id);
+    if(holding) {
+      // Altijd resetten (ook als leeg — wist oude verkeerde waarden)
+      holding.exDivDate = dates?.exDivDate || '';
+      holding.payDate   = dates?.payDate   || '';
+      if(holding.exDivDate || holding.payDate) ok++;
+    }
+    await new Promise(r=>setTimeout(r,300));
   }
   save();
   render();
