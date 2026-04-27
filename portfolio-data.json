@@ -203,7 +203,8 @@
       "frequency": "quarterly",
       "startMonth": 2,
       "sector": "BDC",
-      "payDate": "2026-03-13"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "vici",
@@ -216,7 +217,8 @@
       "frequency": "quarterly",
       "startMonth": 2,
       "sector": "REIT Gaming",
-      "payDate": "2026-03-19"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "bxsl",
@@ -229,7 +231,8 @@
       "frequency": "quarterly",
       "startMonth": 2,
       "sector": "BDC",
-      "payDate": "2026-03-31"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "pep",
@@ -242,7 +245,8 @@
       "frequency": "quarterly",
       "startMonth": 2,
       "sector": "Consumentengoed",
-      "payDate": "2026-03-06"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "obdc",
@@ -255,7 +259,8 @@
       "frequency": "quarterly",
       "startMonth": 1,
       "sector": "BDC",
-      "payDate": "2026-03-31"
+      "payDate": "",
+      "exDivDate": ""
     },
     {
       "id": "ahrt",
@@ -268,7 +273,8 @@
       "frequency": "quarterly",
       "startMonth": 2,
       "sector": "REIT",
-      "payDate": "2026-03-26"
+      "payDate": "",
+      "exDivDate": ""
     }
   ],
   "transactions": [
